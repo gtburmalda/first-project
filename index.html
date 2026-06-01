@@ -1,0 +1,473 @@
+cat > /mnt/user-data/outputs/index.html << 'HTMLEOF'
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BT — Персональный тренер</title>
+  <link rel="stylesheet" href="./stylesmain.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: #000; color: #fff; font-family: 'Heebo', sans-serif; overflow-x: hidden; cursor: default; }
+
+    .rv { opacity: 0; transform: translateY(24px); transition: opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1); }
+    .rv.up { transform: translateY(0); opacity: 1; }
+    .rv-d1 { transition-delay: .08s; } .rv-d2 { transition-delay: .16s; }
+    .rv-d3 { transition-delay: .24s; } .rv-d4 { transition-delay: .32s; }
+    .rv-d5 { transition-delay: .40s; }
+
+    /* HEADER */
+    .hdr { position: fixed; inset: 0 0 auto; z-index: 900; height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 32px; border-bottom: 1px solid #111; background: rgba(0,0,0,.94); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+    .hdr-logo img { display: block; }
+    .hdr-logo-text { font-size: 17px; font-weight: 700; letter-spacing: 5px; text-transform: uppercase; color: #fff; }
+    .hdr-logo-text span { color: #008000; }
+    .hdr-right { display: flex; align-items: center; gap: 10px; }
+
+    .header-record-button { display: inline-flex; align-items: center; gap: 6px; background: #008000; color: #fff; border: none; border-radius: 6px; padding: 0 20px; height: 38px; font-family: inherit; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: background .18s; }
+    .header-record-button:hover { background: #005f00; }
+
+    .header-profile-button { display: inline-flex; align-items: center; background: transparent; color: #aaa; border: 1px solid #2a2a2a; border-radius: 6px; padding: 0 18px; height: 38px; font-family: inherit; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: color .18s, border-color .18s; }
+    .header-profile-button:hover { color: #fff; border-color: #555; }
+
+    .auth-name { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #888; }
+
+    /* HERO */
+    .hero { min-height: 100vh; padding-top: 60px; display: flex; flex-direction: column; border-bottom: 1px solid #111; }
+    .hero-meta { display: flex; justify-content: space-between; align-items: center; padding: 20px 32px; border-bottom: 1px solid #0e0e0e; }
+    .hero-meta-left { display: flex; gap: 40px; }
+    .meta-item { font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: #d8d8d8; }
+    .meta-item.live { color: #008000; display: flex; align-items: center; gap: 7px; }
+    .meta-item.live::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #008000; animation: blink 2s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
+
+    .hero-title-block { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 0 28px; }
+    .hero-title { font-size: clamp(64px, 11.5vw, 168px); font-weight: 700; text-transform: uppercase; line-height: .93; letter-spacing: -4px; }
+    .hero-title .line { display: block; overflow: hidden; }
+    .hero-title .word { display: inline-block; animation: slideUp .9s cubic-bezier(.16,1,.3,1) both; }
+    .hero-title .word-2 { animation-delay: .08s; } .hero-title .word-3 { animation-delay: .16s; } .hero-title .word-4 { animation-delay: .24s; }
+    @keyframes slideUp { from{transform:translateY(110%);opacity:0} to{transform:translateY(0);opacity:1} }
+    .hero-title .green { color: #008000; }
+    .hero-title .outline { -webkit-text-stroke: 1.5px #333; color: transparent; }
+
+    .hero-bottom { display: grid; grid-template-columns: 1fr 1fr 1fr; border-top: 1px solid #0e0e0e; }
+    .hb-cell { padding: 24px 32px; border-right: 1px solid #0e0e0e; }
+    .hb-cell:last-child { border-right: none; }
+    .hb-label { font-size: 9px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: #d8d8d8; margin-bottom: 8px; }
+    .hb-value { font-size: 28px; font-weight: 700; color: #fff; letter-spacing: -1px; line-height: 1; }
+    .hb-value.g { color: #008000; }
+    .hb-cta { display: flex; align-items: center; gap: 10px; }
+    .btn-big { display: inline-flex; align-items: center; gap: 8px; background: #fff; color: #000; border: none; border-radius: 7px; padding: 0 24px; height: 46px; font-family: inherit; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: background .15s, transform .15s; white-space: nowrap; }
+    .btn-big:hover { background: #d8d8d8; transform: translateY(-2px); }
+    .btn-ghost-sm { display: inline-flex; align-items: center; background: transparent; color: #aaa; border: 1px solid #2a2a2a; border-radius: 7px; padding: 0 20px; height: 46px; font-family: inherit; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: color .15s, border-color .15s; white-space: nowrap; }
+    .btn-ghost-sm:hover { color: #fff; border-color: #555; }
+
+    /* TICKER */
+    .ticker { border-bottom: 1px solid #111; overflow: hidden; padding: 12px 0; background: #000; }
+    .ticker-track { display: flex; width: max-content; animation: scroll 30s linear infinite; }
+    @keyframes scroll { to { transform: translateX(-50%); } }
+    .t-item { display: flex; align-items: center; gap: 16px; padding: 0 28px; font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: #d8d8d8; white-space: nowrap; }
+    .t-item.hi { color: #008000; }
+    .t-sep { width: 3px; height: 3px; border-radius: 50%; background: #555; }
+    .t-item.hi .t-sep { background: #008000; }
+
+    /* STATS */
+    .stats-band { display: grid; grid-template-columns: repeat(4, 1fr); border-bottom: 1px solid #111; }
+    .stat-cell { padding: 60px 40px; border-right: 1px solid #111; position: relative; overflow: hidden; transition: background .3s; }
+    .stat-cell:last-child { border-right: none; }
+    .stat-cell:hover { background: #060606; }
+    .stat-cell::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: #008000; transform: scaleX(0); transform-origin: left; transition: transform .4s cubic-bezier(.16,1,.3,1); }
+    .stat-cell:hover::after { transform: scaleX(1); }
+    .s-icon { color: #222; margin-bottom: 20px; transition: color .3s; }
+    .stat-cell:hover .s-icon { color: #008000; }
+    .s-num { font-size: clamp(52px, 5.5vw, 80px); font-weight: 700; color: #fff; line-height: 1; letter-spacing: -3px; margin-bottom: 8px; }
+    .s-num .g { color: #008000; }
+    /* ФИХ: было #2a2a2a — невидимо на чёрном */
+    .s-label { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #888; }
+
+    /* SERVICES */
+    .svc-section { border-bottom: 1px solid #111; }
+    .svc-header { display: flex; justify-content: space-between; align-items: center; padding: 32px 32px 28px; border-bottom: 1px solid #0e0e0e; }
+    .label-tag { font-size: 10px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: #008000; }
+    /* ФИХ: было #1e1e1e — невидимо */
+    .label-count { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #666; }
+
+    .svc-row { display: grid; grid-template-columns: 60px 1fr auto; align-items: center; padding: 0 32px; border-bottom: 1px solid #080808; cursor: default; transition: background .2s; position: relative; overflow: hidden; }
+    .svc-row::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: #008000; transform: scaleY(0); transition: transform .3s cubic-bezier(.16,1,.3,1); }
+    .svc-row:hover { background: #050505; }
+    .svc-row:hover::before { transform: scaleY(1); }
+    .svc-row:last-child { border-bottom: none; }
+    .svc-n { font-size: 11px; font-weight: 700; color: #008000; letter-spacing: 1px; padding: 28px 0; }
+    .svc-title-wrap { padding: 28px 32px 28px 0; }
+    .svc-title { font-size: clamp(22px, 3vw, 42px); font-weight: 700; text-transform: uppercase; letter-spacing: -0.5px; line-height: 1; margin-bottom: 6px; transition: color .2s; color: #fff; }
+    .svc-row:hover .svc-title { color: #fff; }
+    .svc-sub { font-size: 11px; color: #d8d8d8; letter-spacing: 1px; }
+    .svc-price-col { text-align: right; white-space: nowrap; }
+    .svc-price-val { font-size: 18px; font-weight: 700; color: #fff; letter-spacing: -0.5px; display: block; margin-bottom: 3px; }
+    /* ФИХ: было #252525 — невидимо */
+    .svc-price-per { font-size: 10px; color: #666; letter-spacing: 1px; text-transform: uppercase; }
+
+    /* PROGRESS */
+    .prog-section { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid #111; min-height: 480px; }
+    .prog-left { padding: 64px 32px; border-right: 1px solid #111; display: flex; flex-direction: column; justify-content: space-between; }
+    .prog-right { padding: 64px 32px; display: flex; flex-direction: column; justify-content: center; }
+    .big-h { font-size: clamp(48px, 6vw, 90px); font-weight: 700; text-transform: uppercase; line-height: .95; letter-spacing: -3px; }
+    .big-h .g { color: #008000; }
+    /* ФИХ: было #2e2e2e — невидимо */
+    .prog-desc { font-size: 12px; color: #888; line-height: 1.9; max-width: 300px; letter-spacing: .3px; }
+    .pbar { padding: 18px 0; border-bottom: 1px solid #0e0e0e; }
+    .pbar:first-child { border-top: 1px solid #0e0e0e; }
+    .pbar-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
+    /* ФИХ: было #333 — почти невидимо */
+    .pbar-name { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: #aaa; }
+    .pbar-pct { font-size: 13px; font-weight: 700; color: #008000; letter-spacing: -0.5px; }
+    .pbar-track { height: 2px; background: #1a1a1a; }
+    .pbar-fill { height: 100%; width: 0; background: #008000; transition: width 1.6s cubic-bezier(.16,1,.3,1); }
+
+    /* PROCESS */
+    .proc-section { border-bottom: 1px solid #111; }
+    .proc-header { padding: 32px 32px 28px; border-bottom: 1px solid #0e0e0e; display: flex; justify-content: space-between; align-items: center; }
+    .proc-steps { display: grid; grid-template-columns: repeat(4, 1fr); }
+    .proc-cell { padding: 48px 32px; border-right: 1px solid #080808; position: relative; transition: background .25s; }
+    .proc-cell:last-child { border-right: none; }
+    .proc-cell:hover { background: #050505; }
+    .proc-cell::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: #008000; transform: scaleX(0); transform-origin: left; transition: transform .3s; }
+    .proc-cell:hover::before { transform: scaleX(1); }
+    .proc-n { font-size: 80px; font-weight: 700; color: #008000; line-height: 1; letter-spacing: -4px; margin-bottom: 24px; transition: color .3s; }
+    .proc-cell:hover .proc-n { color: #111; }
+    .proc-ico { color: #008000; margin-bottom: 14px; }
+    .proc-name { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; margin-bottom: 10px; color: #fff; }
+    /* ФИХ: было #d8d8d8 — оставляем, это нормально */
+    .proc-desc { font-size: 12px; color: #d8d8d8; line-height: 1.8; }
+
+    /* CTA */
+    .cta-band { background: #008000; padding: 80px 32px; display: flex; align-items: center; justify-content: space-between; gap: 40px; border-bottom: 1px solid #006800; position: relative; overflow: hidden; }
+    .cta-band::before { content: '07'; position: absolute; right: -20px; top: 50%; transform: translateY(-50%); font-size: 240px; font-weight: 700; color: rgba(0,0,0,.08); letter-spacing: -12px; line-height: 1; pointer-events: none; user-select: none; }
+    .cta-tag { font-size: 10px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,.45); margin-bottom: 14px; }
+    .cta-h { font-size: clamp(36px, 5vw, 68px); font-weight: 700; text-transform: uppercase; line-height: .95; letter-spacing: -2px; color: #fff; }
+    .cta-right-area { display: flex; flex-direction: column; align-items: flex-end; gap: 16px; flex-shrink: 0; position: relative; z-index: 1; }
+    .cta-note { font-size: 11px; color: rgba(255,255,255,.55); text-transform: uppercase; letter-spacing: 1.5px; }
+    .btn-cta { display: inline-flex; align-items: center; gap: 8px; background: #000; color: #fff; border: none; border-radius: 7px; padding: 0 32px; height: 54px; font-family: inherit; font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: background .18s, transform .15s; white-space: nowrap; }
+    .btn-cta:hover { background: #111; transform: translateY(-2px); }
+
+    /* FOOTER */
+    .footer { display: flex; align-items: center; justify-content: space-between; padding: 22px 32px; }
+    .footer-logo { font-size: 14px; font-weight: 700; letter-spacing: 4px; text-transform: uppercase; color: #fff; }
+    .footer-logo span { color: #008000; }
+    .footer-links { display: flex; gap: 32px; }
+    /* ФИХ: было #1e1e1e — невидимо */
+    .footer-links a { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #666; text-decoration: none; transition: color .18s; }
+    .footer-links a:hover { color: #fff; }
+    /* ФИХ: было #1a1a1a — невидимо */
+    .footer-copy { font-size: 10px; color: #444; letter-spacing: 1px; }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      .hero-title { letter-spacing: -2px; }
+      .stats-band { grid-template-columns: 1fr 1fr; }
+      .stat-cell:nth-child(2) { border-right: none; }
+      .stat-cell:nth-child(3) { border-top: 1px solid #111; }
+      .stat-cell:nth-child(4) { border-top: 1px solid #111; border-right: none; }
+      .prog-section { grid-template-columns: 1fr; }
+      .prog-left { border-right: none; border-bottom: 1px solid #111; }
+      .proc-steps { grid-template-columns: 1fr 1fr; }
+      .proc-cell:nth-child(2) { border-right: none; }
+      .proc-cell:nth-child(3) { border-top: 1px solid #080808; }
+      .proc-cell:nth-child(4) { border-top: 1px solid #080808; border-right: none; }
+      .cta-band { flex-direction: column; align-items: flex-start; }
+      .cta-right-area { align-items: flex-start; }
+      .hero-bottom { grid-template-columns: 1fr 1fr; }
+      .hb-cell:nth-child(3) { grid-column: 1/-1; border-top: 1px solid #0e0e0e; border-right: none; }
+    }
+    @media (max-width: 580px) {
+      .hdr { padding: 0 16px; }
+      .hero-meta { padding: 14px 16px; }
+      .hero-meta-left { gap: 16px; }
+      .hero-title-block { padding: 0 16px; }
+      .hb-cell { padding: 20px 16px; }
+      .stats-band { grid-template-columns: 1fr 1fr; }
+      .svc-header, .proc-header { padding: 20px 16px; }
+      .svc-row { padding: 0 16px; }
+      .svc-price-col { display: none; }
+      .proc-steps { grid-template-columns: 1fr; }
+      .proc-cell { border-right: none; border-top: 1px solid #080808; }
+      .cta-band { padding: 48px 16px; }
+      .footer { flex-direction: column; gap: 16px; text-align: center; padding: 20px 16px; }
+      .footer-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ШАПКА -->
+  <header class="hdr">
+    <a class="hdr-logo" href="/">
+      <img src="./images/Header-logo-bt.png.png" alt="BT" width="120" height="22" loading="lazy"
+        onerror="this.style.display='none';this.nextSibling.style.display='block'">
+      <span class="hdr-logo-text" style="display:none">BT<span>.</span></span>
+    </a>
+    <div class="hdr-right">
+      <button class="header-record-button" type="button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M16.91 2.29a.996.996 0 0 0-1.41 0l-1.59 1.59-1.09-1.09a.996.996 0 0 0-1.41 0l-2.3 2.3c-.19.19-.29.44-.29.71s.11.52.29.71L12.6 10l-2.59 2.59L6.52 9.1a.996.996 0 0 0-1.41 0l-2.3 2.3a.996.996 0 0 0 0 1.41L3.9 13.9l-1.59 1.59a.996.996 0 0 0 0 1.41l4.8 4.8c.2.2.45.29.71.29s.51-.1.71-.29l1.59-1.59 1.09 1.09c.2.2.45.29.71.29s.51-.1.71-.29l2.3-2.3c.19-.19.29-.44.29-.71s-.11-.52-.29-.71l-3.49-3.49 2.59-2.59 3.49 3.49c.2.2.45.29.71.29s.51-.1.71-.29l2.3-2.3a.996.996 0 0 0 0-1.41l-1.09-1.09 1.59-1.59a.996.996 0 0 0 0-1.41l-4.8-4.8Z"/>
+        </svg>
+        Запись
+      </button>
+      <div id="authArea"></div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-meta">
+      <div class="hero-meta-left">
+        <div class="meta-item">Персональный тренер</div>
+        <div class="meta-item">2019 — 2026</div>
+      </div>
+      <div class="meta-item live">Доступны записи</div>
+    </div>
+    <div class="hero-title-block">
+      <h1 class="hero-title">
+        <span class="line"><span class="word">Твоё</span></span>
+        <span class="line"><span class="word word-2 outline">тело —</span></span>
+        <span class="line"><span class="word word-3">твой</span></span>
+        <span class="line"><span class="word word-4 green">результат</span></span>
+      </h1>
+    </div>
+    <div class="hero-bottom">
+      <div class="hb-cell rv rv-d1">
+        <div class="hb-label"></div>
+        <div class="hb-value g"></div>
+      </div>
+      <div class="hb-cell rv rv-d2">
+        <div class="hb-label"></div>
+        <div class="hb-value"></div>
+      </div>
+      <div class="hb-cell rv rv-d3">
+        <div class="hb-label hb-cta" style="margin-bottom:14px">Первая консультация бесплатно</div>
+        <div class="hb-cta">
+          <button class="btn-big" onclick="document.querySelector('.header-record-button').click()">Записаться</button>
+          <button class="btn-ghost-sm" onclick="document.getElementById('svc').scrollIntoView({behavior:'smooth'})">Услуги →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TICKER -->
+  <div class="ticker">
+    <div class="ticker-track">
+      <div class="t-item hi"><span class="t-sep"></span>Персональные тренировки</div>
+      <div class="t-item"><span class="t-sep"></span>Программы питания</div>
+      <div class="t-item hi"><span class="t-sep"></span>7 лет опыта</div>
+      <div class="t-item"><span class="t-sep"></span>Набор мышечной массы</div>
+      <div class="t-item hi"><span class="t-sep"></span>Снижение веса</div>
+      <div class="t-item"><span class="t-sep"></span>Онлайн-ведение</div>
+      <div class="t-item hi"><span class="t-sep"></span>300+ клиентов</div>
+      <div class="t-item"><span class="t-sep"></span>Силовые тренировки</div>
+      <div class="t-item hi"><span class="t-sep"></span>Кардио</div>
+      <div class="t-item"><span class="t-sep"></span>Контроль питания</div>
+      <div class="t-item hi"><span class="t-sep"></span>Персональные тренировки</div>
+      <div class="t-item"><span class="t-sep"></span>Программы питания</div>
+      <div class="t-item hi"><span class="t-sep"></span>7 лет опыта</div>
+      <div class="t-item"><span class="t-sep"></span>Набор мышечной массы</div>
+      <div class="t-item hi"><span class="t-sep"></span>Снижение веса</div>
+      <div class="t-item"><span class="t-sep"></span>Онлайн-ведение</div>
+      <div class="t-item hi"><span class="t-sep"></span>300+ клиентов</div>
+      <div class="t-item"><span class="t-sep"></span>Силовые тренировки</div>
+      <div class="t-item hi"><span class="t-sep"></span>Кардио</div>
+      <div class="t-item"><span class="t-sep"></span>Контроль питания</div>
+    </div>
+  </div>
+
+  <!-- СТАТИСТИКА -->
+  <div class="stats-band">
+    <div class="stat-cell rv rv-d1">
+      <div class="s-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M16.91 2.29a.996.996 0 0 0-1.41 0l-1.59 1.59-1.09-1.09a.996.996 0 0 0-1.41 0l-2.3 2.3c-.19.19-.29.44-.29.71s.11.52.29.71L12.6 10l-2.59 2.59L6.52 9.1a.996.996 0 0 0-1.41 0l-2.3 2.3a.996.996 0 0 0 0 1.41L3.9 13.9l-1.59 1.59a.996.996 0 0 0 0 1.41l4.8 4.8c.2.2.45.29.71.29s.51-.1.71-.29l1.59-1.59 1.09 1.09c.2.2.45.29.71.29s.51-.1.71-.29l2.3-2.3c.19-.19.29-.44.29-.71s-.11-.52-.29-.71l-3.49-3.49 2.59-2.59 3.49 3.49c.2.2.45.29.71.29s.51-.1.71-.29l2.3-2.3a.996.996 0 0 0 0-1.41l-1.09-1.09 1.59-1.59a.996.996 0 0 0 0-1.41l-4.8-4.8Z"/>
+        </svg>
+      </div>
+      <div class="s-num"><span class="g">7</span>+</div>
+      <div class="s-label">Лет в профессии</div>
+    </div>
+    <div class="stat-cell rv rv-d2">
+      <div class="s-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M4 2H2v19c0 .55.45 1 1 1h19v-2H4z"/><path d="M8 17c1.1 0 2-.9 2-2 0-.47-.17-.9-.45-1.25l1.62-3.77c.19-.02.38-.06.56-.12l2.31 1.84c-.01.1-.03.19-.03.3 0 1.1.9 2 2 2s2-.9 2-2c0-.41-.12-.78-.33-1.1l1.46-2.91c1.04-.07 1.88-.93 1.88-1.99s-.9-2-2-2-2 .9-2 2c0 .41.12.78.33 1.1l-1.46 2.91c-.21.01-.41.05-.6.13L12.98 8.3c.01-.1.03-.19.03-.3 0-1.1-.9-2-2-2s-2 .9-2 2c0 .42.13.81.36 1.13l-1.67 3.9c-.95.15-1.68.97-1.68 1.97 0 1.1.9 2 2 2Z"/>
+        </svg>
+      </div>
+      <div class="s-num">98<span class="g">%</span></div>
+      <div class="s-label">достигают цели</div>
+    </div>
+    <div class="stat-cell rv rv-d3">
+      <div class="s-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M16.91 2.29a.996.996 0 0 0-1.41 0l-1.59 1.59-1.09-1.09a.996.996 0 0 0-1.41 0l-2.3 2.3c-.19.19-.29.44-.29.71s.11.52.29.71L12.6 10l-2.59 2.59L6.52 9.1a.996.996 0 0 0-1.41 0l-2.3 2.3a.996.996 0 0 0 0 1.41L3.9 13.9l-1.59 1.59a.996.996 0 0 0 0 1.41l4.8 4.8c.2.2.45.29.71.29s.51-.1.71-.29l1.59-1.59 1.09 1.09c.2.2.45.29.71.29s.51-.1.71-.29l2.3-2.3c.19-.19.29-.44.29-.71s-.11-.52-.29-.71l-3.49-3.49 2.59-2.59 3.49 3.49c.2.2.45.29.71.29s.51-.1.71-.29l2.3-2.3a.996.996 0 0 0 0-1.41l-1.09-1.09 1.59-1.59a.996.996 0 0 0 0-1.41l-4.8-4.8Z"/>
+        </svg>
+      </div>
+      <div class="s-num">-12<span class="g"></span></div>
+      <div class="s-label">кг в среднем за 6 недель</div>
+    </div>
+    <div class="stat-cell rv rv-d4">
+      <div class="s-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M4 2H2v19c0 .55.45 1 1 1h19v-2H4z"/><path d="M8 17c1.1 0 2-.9 2-2 0-.47-.17-.9-.45-1.25l1.62-3.77c.19-.02.38-.06.56-.12l2.31 1.84c-.01.1-.03.19-.03.3 0 1.1.9 2 2 2s2-.9 2-2c0-.41-.12-.78-.33-1.1l1.46-2.91c1.04-.07 1.88-.93 1.88-1.99s-.9-2-2-2-2 .9-2 2c0 .41.12.78.33 1.1l-1.46 2.91c-.21.01-.41.05-.6.13L12.98 8.3c.01-.1.03-.19.03-.3 0-1.1-.9-2-2-2s-2 .9-2 2c0 .42.13.81.36 1.13l-1.67 3.9c-.95.15-1.68.97-1.68 1.97 0 1.1.9 2 2 2Z"/>
+        </svg>
+      </div>
+      <div class="s-num"><span class="g">∞</span></div>
+      <div class="s-label">потенциал для развития</div>
+    </div>
+  </div>
+
+  <!-- УСЛУГИ -->
+  <section class="svc-section" id="svc">
+    <div class="svc-header">
+      <div class="label-tag">Услуги</div>
+      <div class="label-count">04 направления</div>
+    </div>
+    <div class="svc-row rv rv-d1">
+      <div class="svc-n">01</div>
+      <div class="svc-title-wrap">
+        <div class="svc-title">Персональная тренировка</div>
+        <div class="svc-sub">Один на один · Зал · Техника · Нагрузка</div>
+      </div>
+      <div class="svc-price-col">
+        <span class="svc-price-val"></span>
+        <span class="svc-price-per"></span>
+      </div>
+    </div>
+    <div class="svc-row rv rv-d2">
+      <div class="svc-n">02</div>
+      <div class="svc-title-wrap">
+        <div class="svc-title">Программа питания</div>
+        <div class="svc-sub">Персональный рацион</div>
+      </div>
+      <div class="svc-price-col">
+        <span class="svc-price-val"></span>
+        <span class="svc-price-per"></span>
+      </div>
+    </div>
+    <div class="svc-row rv rv-d3">
+      <div class="svc-n">03</div>
+      <div class="svc-title-wrap">
+        <div class="svc-title">Онлайн-ведение</div>
+        <div class="svc-sub">Тренировки + питание + ежедневная связь</div>
+      </div>
+      <div class="svc-price-col">
+        <span class="svc-price-val"></span>
+        <span class="svc-price-per"></span>
+      </div>
+    </div>
+    <div class="svc-row rv rv-d4">
+      <div class="svc-n">04</div>
+      <div class="svc-title-wrap">
+        <div class="svc-title">Первая консультация</div>
+        <div class="svc-sub">Диагностика · Постановка целей · Первый план</div>
+      </div>
+      <div class="svc-price-col">
+        <span class="svc-price-val" style="color:#008000"></span>
+        <span class="svc-price-per"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ПРОЦЕСС -->
+  <section class="proc-section">
+    <div class="proc-header">
+      <div class="label-tag">Как начать</div>
+      <div class="label-count">4 шага до результата</div>
+    </div>
+    <div class="proc-steps">
+      <div class="proc-cell rv rv-d1">
+        <div class="proc-n">01</div>
+        <div class="proc-ico">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5m0-8c1.65 0 3 1.35 3 3s-1.35 3-3 3-3-1.35-3-3 1.35-3 3-3M4 22h16c.55 0 1-.45 1-1v-1c0-3.86-3.14-7-7-7h-4c-3.86 0-7 3.14-7 7v1c0 .55.45 1 1 1m6-7h4c2.76 0 5 2.24 5 5H5c0-2.76 2.24-5 5-5"/>
+          </svg>
+        </div>
+        <div class="proc-name">Создай профиль</div>
+        <div class="proc-desc">Регистрация за 30 секунд — только имя и пароль.</div>
+      </div>
+      <div class="proc-cell rv rv-d2">
+        <div class="proc-n">02</div>
+        <div class="proc-ico">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M19 4h-1V2h-2v2H8V2H6v2H5C3.9 4 3 4.9 3 6v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2m0 16H5V10h14zm0-12H5V6h14z"/>
+          </svg>
+        </div>
+        <div class="proc-name">Выбери дату</div>
+        <div class="proc-desc">Открой календарь и выбери удобный слот.</div>
+      </div>
+      <div class="proc-cell rv rv-d3">
+        <div class="proc-n">03</div>
+        <div class="proc-ico">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M16.91 2.29a.996.996 0 0 0-1.41 0l-1.59 1.59-1.09-1.09a.996.996 0 0 0-1.41 0l-2.3 2.3c-.19.19-.29.44-.29.71s.11.52.29.71L12.6 10l-2.59 2.59L6.52 9.1a.996.996 0 0 0-1.41 0l-2.3 2.3a.996.996 0 0 0 0 1.41L3.9 13.9l-1.59 1.59a.996.996 0 0 0 0 1.41l4.8 4.8c.2.2.45.29.71.29s.51-.1.71-.29l1.59-1.59 1.09 1.09c.2.2.45.29.71.29s.51-.1.71-.29l2.3-2.3c.19-.19.29-.44.29-.71s-.11-.52-.29-.71l-3.49-3.49 2.59-2.59 3.49 3.49c.2.2.45.29.71.29s.51-.1.71-.29l2.3-2.3a.996.996 0 0 0 0-1.41l-1.09-1.09 1.59-1.59a.996.996 0 0 0 0-1.41l-4.8-4.8Z"/>
+          </svg>
+        </div>
+        <div class="proc-name">Первая тренировка</div>
+        <div class="proc-desc">Диагностика и персональная программа на первом занятии.</div>
+      </div>
+      <div class="proc-cell rv rv-d4">
+        <div class="proc-n">04</div>
+        <div class="proc-ico">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M4 2H2v19c0 .55.45 1 1 1h19v-2H4z"/><path d="M8 17c1.1 0 2-.9 2-2 0-.47-.17-.9-.45-1.25l1.62-3.77c.19-.02.38-.06.56-.12l2.31 1.84c-.01.1-.03.19-.03.3 0 1.1.9 2 2 2s2-.9 2-2c0-.41-.12-.78-.33-1.1l1.46-2.91c1.04-.07 1.88-.93 1.88-1.99s-.9-2-2-2-2 .9-2 2c0 .41.12.78.33 1.1l-1.46 2.91c-.21.01-.41.05-.6.13L12.98 8.3c.01-.1.03-.19.03-.3 0-1.1-.9-2-2-2s-2 .9-2 2c0 .42.13.81.36 1.13l-1.67 3.9c-.95.15-1.68.97-1.68 1.97 0 1.1.9 2 2 2Z"/>
+          </svg>
+        </div>
+        <div class="proc-name">Видишь прогресс</div>
+        <div class="proc-desc">Еженедельный контроль. Программа подстраивается под тебя.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div class="cta-band rv">
+    <div class="cta-left-text">
+      <div class="cta-tag">Начни сейчас</div>
+      <h2 class="cta-h">Запишись<br>на первую тренировку</h2>
+    </div>
+    <div class="cta-right-area">
+      <div class="cta-note">Доступные слоты есть</div>
+      <button class="btn-cta" onclick="document.querySelector('.header-record-button').click()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M16.91 2.29a.996.996 0 0 0-1.41 0l-1.59 1.59-1.09-1.09a.996.996 0 0 0-1.41 0l-2.3 2.3c-.19.19-.29.44-.29.71s.11.52.29.71L12.6 10l-2.59 2.59L6.52 9.1a.996.996 0 0 0-1.41 0l-2.3 2.3a.996.996 0 0 0 0 1.41L3.9 13.9l-1.59 1.59a.996.996 0 0 0 0 1.41l4.8 4.8c.2.2.45.29.71.29s.51-.1.71-.29l1.59-1.59 1.09 1.09c.2.2.45.29.71.29s.51-.1.71-.29l2.3-2.3c.19-.19.29-.44.29-.71s-.11-.52-.29-.71l-3.49-3.49 2.59-2.59 3.49 3.49c.2.2.45.29.71.29s.51-.1.71-.29l2.3-2.3a.996.996 0 0 0 0-1.41l-1.09-1.09 1.59-1.59a.996.996 0 0 0 0-1.41l-4.8-4.8Z"/>
+        </svg>
+        Записаться бесплатно
+      </button>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-logo">BT<span>.</span></div>
+    <nav class="footer-links">
+      <a href="#svc">Услуги</a>
+      <a href="login.html">Войти</a>
+      <a href="registration.html">Регистрация</a>
+    </nav>
+    <p class="footer-copy">© 2026 BT — Персональный тренер</p>
+  </footer>
+
+  <!-- СКРИПТЫ: убран type="module", убран firebase.js -->
+  <script src="Auth.js"></script>
+  <script src="booking.js"></script>
+  <script>
+    const user = Auth.currentUser();
+    const area = document.getElementById('authArea');
+    if (user) {
+      area.innerHTML = `
+        <span class="auth-name">👤 ${user}</span>
+        <button class="header-profile-button" id="logoutBtn">Выйти</button>`;
+      document.getElementById('logoutBtn').onclick = () => { Auth.logout(); location.reload(); };
+    } else {
+      area.innerHTML = `<button class="header-profile-button" onclick="location.href='login.html'">Профиль</button>`;
+    }
+
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('up'); obs.unobserve(e.target); } });
+    }, { threshold: 0.07 });
+    document.querySelectorAll('.rv').forEach(el => obs.observe(el));
+  </script>
+</body>
+</html>

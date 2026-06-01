@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Вход</title>
+  <link rel="stylesheet" href="stylesmain.css">
+  <style>
+    body { display:flex; justify-content:center; align-items:center; min-height:100vh; }
+    .wrapper { background:var(--color-black-alternate); border:1px solid #2a2a2a; border-radius:16px; padding:48px 40px 36px; width:100%; max-width:420px; }
+    .wrapper h1 { font-size:22px; letter-spacing:1px; margin-bottom:32px; text-align:center; }
+    .input-place { display:flex; flex-direction:column; gap:16px; }
+    .name-place, .password-place { display:flex; align-items:center; background:#1c1c1c; border:1px solid #333; border-radius:8px; padding:0 14px; gap:10px; transition:border-color var(--transition-duration); }
+    .name-place:focus-within, .password-place:focus-within { border-color:var(--color-green); }
+    .name-place input, .password-place input { flex:1; background:transparent; border:none; outline:none; color:var(--color-white); height:var(--input-height); font-size:15px; }
+    .name-place input::placeholder, .password-place input::placeholder { color:#666; }
+    .name-place svg, .password-place svg { color:#888; flex-shrink:0; }
+    .makeprofile { margin:18px 0 4px; font-size:14px; color:#aaa; }
+    .makeprofile label { display:flex; align-items:center; gap:8px; cursor:pointer; }
+    .makeprofile input[type=checkbox] { accent-color:var(--color-green); width:16px; height:16px; }
+    .btn { display:block; width:100%; margin-top:24px; margin-bottom:20px; height:var(--input-height); background:var(--color-green); color:var(--color-white); border:none; border-radius:8px; font-size:15px; font-weight:700; letter-spacing:1px; text-transform:uppercase; cursor:pointer; transition:opacity var(--transition-duration); }
+    .btn:hover { opacity:.85; }
+    .Registration-link { text-align:center; font-size:14px; color:#aaa; }
+    .Registration-link a { color:var(--color-white); text-decoration:underline; margin-left:4px; }
+    .error-msg { background:#3a0000; border:1px solid #700; border-radius:6px; padding:10px 14px; font-size:13px; color:#ff6b6b; margin-top:14px; display:none; }
+    .error-msg.visible { display:block; }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <form id="loginForm">
+      <h1>Войдите в профиль</h1>
+      <div class="input-place">
+        <div class="name-place">
+          <input id="username" type="text" placeholder="Введите имя" required autocomplete="username">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5m0-8c1.65 0 3 1.35 3 3s-1.35 3-3 3-3-1.35-3-3 1.35-3 3-3M4 22h16c.55 0 1-.45 1-1v-1c0-3.86-3.14-7-7-7h-4c-3.86 0-7 3.14-7 7v1c0 .55.45 1 1 1m6-7h4c2.76 0 5 2.24 5 5H5c0-2.76 2.24-5 5-5"/></svg>
+        </div>
+        <div class="password-place">
+          <input id="password" type="password" placeholder="Введите пароль" required autocomplete="current-password">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 24 24"><path d="M6 22h12c1.1 0 2-.9 2-2v-9c0-1.1-.9-2-2-2h-1V7c0-2.76-2.24-5-5-5S7 4.24 7 7v2H6c-1.1 0-2 .9-2 2v9c0 1.1.9 2 2 2M9 7c0-1.65 1.35-3 3-3s3 1.35 3 3v2H9zm-3 4h12v9H6z"/></svg>
+        </div>
+      </div>
+      <div class="makeprofile">
+        <label><input id="remember" type="checkbox"> Запомнить меня</label>
+      </div>
+      <div class="error-msg" id="errorMsg"></div>
+      <button type="submit" class="btn">Войти</button>
+      <div class="Registration-link">
+        <p>Нет профиля? <a href="registration.html">Создать профиль</a></p>
+      </div>
+    </form>
+  </div>
+
+  <!-- НЕ module — обычный скрипт -->
+  <script src="Auth.js"></script>
+  <script>
+    if (Auth.currentUser()) window.location.href = 'index.html';
+
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      const remember = document.getElementById('remember').checked;
+      const err      = document.getElementById('errorMsg');
+
+      const result = Auth.login(username, password, remember);
+      if (result.ok) {
+        window.location.href = 'index.html';
+      } else {
+        err.textContent = result.error;
+        err.classList.add('visible');
+      }
+    });
+  </script>
+</body>
+</html>
