@@ -150,6 +150,28 @@ cat > /mnt/user-data/outputs/index.html << 'HTMLEOF'
     .btn-cta { display: inline-flex; align-items: center; gap: 8px; background: #000; color: #fff; border: none; border-radius: 7px; padding: 0 32px; height: 54px; font-family: inherit; font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: background .18s, transform .15s; white-space: nowrap; }
     .btn-cta:hover { background: #111; transform: translateY(-2px); }
 
+    /* REVIEWS */
+    .reviews-section { border-top: 1px solid #111; border-bottom: 1px solid #111; padding: 0; overflow: hidden; }
+    .reviews-header { display: flex; justify-content: space-between; align-items: center; padding: 32px 32px 28px; border-bottom: 1px solid #0e0e0e; }
+    .reviews-ticker-wrap { overflow: hidden; padding: 40px 0; position: relative; }
+    .reviews-ticker-wrap::before,
+    .reviews-ticker-wrap::after { content: ''; position: absolute; top: 0; bottom: 0; width: 120px; z-index: 2; pointer-events: none; }
+    .reviews-ticker-wrap::before { left: 0; background: linear-gradient(to right, #000 0%, transparent 100%); }
+    .reviews-ticker-wrap::after { right: 0; background: linear-gradient(to left, #000 0%, transparent 100%); }
+    .reviews-track { display: flex; width: max-content; animation: reviewsScroll 40s linear infinite; gap: 20px; }
+    .reviews-track:hover { animation-play-state: paused; }
+    @keyframes reviewsScroll { to { transform: translateX(-50%); } }
+    .rev-card { background: #0d0d0d; border: 1px solid #1e1e1e; border-radius: 14px; padding: 28px 28px 24px; width: 320px; flex-shrink: 0; position: relative; transition: border-color .25s, background .25s; cursor: default; }
+    .rev-card:hover { background: #111; border-color: #2a2a2a; }
+    .rev-card::before { content: '"'; position: absolute; top: 16px; right: 22px; font-size: 64px; font-weight: 700; color: #008000; line-height: 1; opacity: .18; font-family: Georgia, serif; }
+    .rev-stars { display: flex; gap: 3px; margin-bottom: 14px; }
+    .rev-stars span { color: #008000; font-size: 13px; }
+    .rev-text { font-size: 13px; color: #ccc; line-height: 1.8; margin-bottom: 20px; }
+    .rev-author { display: flex; align-items: center; gap: 12px; border-top: 1px solid #1c1c1c; padding-top: 16px; }
+    .rev-avatar { width: 36px; height: 36px; border-radius: 50%; background: #008000; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0; }
+    .rev-name { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #fff; }
+    .rev-meta { font-size: 10px; color: #555; letter-spacing: .5px; margin-top: 2px; }
+
     /* FOOTER */
     .footer { display: flex; align-items: center; justify-content: space-between; padding: 22px 32px; }
     .footer-logo { font-size: 14px; font-weight: 700; letter-spacing: 4px; text-transform: uppercase; color: #fff; }
@@ -437,6 +459,117 @@ cat > /mnt/user-data/outputs/index.html << 'HTMLEOF'
       </button>
     </div>
   </div>
+
+  <!-- ОТЗЫВЫ -->
+  <section class="reviews-section">
+    <div class="reviews-header">
+      <div class="label-tag">Отзывы</div>
+      <div class="label-count"></div>
+    </div>
+    <div class="reviews-ticker-wrap">
+      <div class="reviews-track" id="reviewsTrack">
+
+        <div class="rev-card">
+          <div class="rev-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+          <div class="rev-text">Хочу от души поблагодарить Алексея за работу! С ним вы получите не только тренировки и грамотный подход к физухе, но и поддержку с мотивацией.</div>
+          <div class="rev-author"><div class="rev-avatar">КИ</div><div><div class="rev-name">Карина И.</div><div class="rev-meta"></div></div></div>
+        </div>
+
+        <div class="rev-card">
+          <div class="rev-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+          <div class="rev-text">Записалась на тренировки и не пожалела,очень душевно,поддержка выше крыши. Научилась любить легинсы и обтягивающие лонгсливы, начинаю отходить от оверсайза!</div>
+          <div class="rev-author"><div class="rev-avatar">ЮД</div><div><div class="rev-name">Юлия Д.</div><div class="rev-meta"></div></div></div>
+        </div>
+
+        <div class="rev-card">
+          <div class="rev-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+          <div class="rev-text">Лучший тренер! Выбирала тренера интуитивно и не прогадала ни капли. С самой 1-ой тренировки было ощущение, что занимаюсь давно у Алексея.В связи с переездом пришлось уйти в другой спортзал. Но Алексей всегда на связи!</div>
+          <div class="rev-author"><div class="rev-avatar">АМ</div><div><div class="rev-name">Алина М.</div><div class="rev-meta"></div></div></div>
+        </div>
+
+        <div class="rev-card">
+          <div class="rev-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+          <div class="rev-text">Пришла в зал не зная о нем ничего, посчастливилось попасть в руки Алексея. У меня много ограничений и боялась ходить в зал. Но Алексей помог и помогает разрабатывать мне руку, к слову имела ограничение движения в 90°, сейчас спустя 2 месяца уже на 10° больше и это супер.💪🙏💕 Спасибо отличному тренеру.</div>
+          <div class="rev-author"><div class="rev-avatar">AВ</div><div><div class="rev-name">Анастасия В.</div><div class="rev-meta"></div></div></div>
+        </div>
+
+        <div class="rev-card">
+          <div class="rev-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+          <div class="rev-text">Ровно год назад я пришла в зал с достаточно серьезными проблемами. Я знала что мне нужен тренер который будет строгим, не давать мне халтурить, тренер который решит мою проблему с резко набранным лишним весом. За год мы добились: сброс лишних 7кг, набор мышечной массы, упругость кожи, выпрямление и укрепление спины, снятие зажимов. Считаю этот год очень продуктивным, благодаря Алексею.</div>
+          <div class="rev-author"><div class="rev-avatar">ГВ</div><div><div class="rev-name">Гулия В.</div><div class="rev-meta"></div></div></div>
+        </div>
+
+        <div class="rev-card">
+          <div class="rev-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+          <div class="rev-text">Полгода назад были очень серьезные проблемы со здоровьем. Было тяжело дышать, повышенное давление, бессонные ночи. Спортзал был для меня табу всю мою жизнь. Выбрала Алексея интуитивно. За месяца 4 скинула 17 лишних кг и это не предел. Сейчас я посещаю тренировки с удовольствием и даже скучаю по ним, в выходные дни. Алексей, спасибо вам за вашу работу и индивидуальный подход!</div>
+          <div class="rev-author"><div class="rev-avatar">РМ</div><div><div class="rev-name">Регина М.</div><div class="rev-meta"></div></div></div>
+        </div>
+
+        <div class="rev-card">
+          <div class="rev-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+          <div class="rev-text">Пришла к Алексею с болью в спине в грудной клетке. С первого сеанса массажа мне стало понятно, что я попала в надежные руки профессионала. Ушли боли и проблемы со спиной, улучшилось качество жизни. Алексей скорректировал мое питание, благодаря чему я скинула за 6 месяцев более чем 15 кг. Стала лучше растяжка, выносливость, спина выпрямилась. Появилась энергия и бодрость!</div>
+          <div class="rev-author"><div class="rev-avatar">ГИ</div><div><div class="rev-name">Гульнара И.</div><div class="rev-meta"></div></div></div>
+        </div>
+
+        <div class="rev-card">
+          <div class="rev-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+          <div class="rev-text">Обратилась к Алексею как к массажисту летом 2024г. На протяжении последних 5 лет беспокоили боли в пояснице, которые блокировала у невропатолога уколами. Уже после первых сеансов массажа поувствовала себя лучше, далее боль ушла полностью.Далее последовали рекомендации по питанию и физической нагрузке для поддержания здоровья!</div>
+          <div class="rev-author"><div class="rev-avatar">ГЗ</div><div><div class="rev-name">Гелюся З.</div><div class="rev-meta"></div></div></div>
+        </div>
+
+        <!-- дублируем для бесшовного тикера -->
+
+        <div class="rev-card">
+          <div class="rev-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+          <div class="rev-text">Хочу от души поблагодарить Алексея за работу! С ним вы получите не только тренировки, но и грамотный подход к физухе, но и поддержку с мотивацией.</div>
+          <div class="rev-author"><div class="rev-avatar">КИ</div><div><div class="rev-name">Карина И.</div><div class="rev-meta"></div></div></div>
+        </div>
+
+        <div class="rev-card">
+          <div class="rev-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+          <div class="rev-text">Записалась на тренировки и не пожалела,очень душевно,поддержка выше крыши. Научилась любить легинсы и обтягивающие лонгсливы, начинаю отходить от оверсайза!</div>
+          <div class="rev-author"><div class="rev-avatar">ЮД</div><div><div class="rev-name">Юлия Д.</div><div class="rev-meta"></div></div></div>
+        </div>
+
+        <div class="rev-card">
+          <div class="rev-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+          <div class="rev-text">Лучший тренер! Выбирала тренера интуитивно и не прогадала ни капли. С самой 1-ой тренировки было ощущение, что занимаюсь давно у Алексея.В связи с переездом пришлось уйти в другой спортзал. Но Алексей всегда на связи!</div>
+          <div class="rev-author"><div class="rev-avatar">АМ</div><div><div class="rev-name">Алина М.</div><div class="rev-meta"></div></div></div>
+        </div>
+
+        <div class="rev-card">
+          <div class="rev-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+          <div class="rev-text">Пришла в зал не зная о нем ничего, посчастливилось попасть в руки Алексея. У меня много ограничений и боялась ходить в зал. Но Алексей помог и помогает разрабатывать мне руку, к слову имела ограничение движения в 90°, сейчас спустя 2 месяца уже на 10° больше и это супер.💪🙏💕 Спасибо отличному тренеру.</div>
+          <div class="rev-author"><div class="rev-avatar">АВ</div><div><div class="rev-name">Анастасия В.</div><div class="rev-meta"></div></div></div>
+        </div>
+
+        <div class="rev-card">
+          <div class="rev-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+          <div class="rev-text">>Ровно год назад я пришла в зал с достаточно серьезными проблемами. Я знала что мне нужен тренер который будет строгим, не давать мне халтурить, тренер который решит мою проблему с резко набранным лишним весом. За год мы добились: сброс лишних 7кг, набор мышечной массы, упругость кожи, выпрямление и укрепление спины, снятие зажимов. Считаю этот год очень продуктивным, благодаря Алексею.</div>
+          <div class="rev-author"><div class="rev-avatar">ГВ</div><div><div class="rev-name">Гулия В.</div><div class="rev-meta"></div></div></div>
+        </div>
+
+        <div class="rev-card">
+          <div class="rev-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+          <div class="rev-text">Полгода назад были очень серьезные проблемы со здоровьем. Было тяжело дышать, повышенное давление, бессонные ночи. Спортзал был для меня табу всю мою жизнь. Выбрала Алексея интуитивно. За месяца 4 скинула 17 лишних кг и это не предел. Сейчас я посещаю тренировки с удовольствием и даже скучаю по ним, в выходные дни. Алексей, спасибо вам за вашу работу и индивидуальный подход!</div>
+          <div class="rev-author"><div class="rev-avatar">РМ</div><div><div class="rev-name">Регина М.</div><div class="rev-meta"></div></div></div>
+        </div>
+
+        <div class="rev-card">
+          <div class="rev-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+          <div class="rev-text">Пришла к Алексею с болью в спине в грудной клетке. С первого сеанса массажа мне стало понятно, что я попала в надежные руки профессионала. Ушли боли и проблемы со спиной, улучшилось качество жизни. Алексей скорректировал мое питание, благодаря чему я скинула за 6 месяцев более чем 15 кг. Стала лучше растяжка, выносливость, спина выпрямилась. Появилась энергия и бодрость!</div>
+          <div class="rev-author"><div class="rev-avatar">ГИ</div><div><div class="rev-name">Гульнара И.</div><div class="rev-meta"></div></div></div>
+        </div>
+
+        <div class="rev-card">
+          <div class="rev-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+          <div class="rev-text">Обратилась к Алексею как к массажисту летом 2024г. На протяжении последних 5 лет беспокоили боли в пояснице, которые блокировала у невропатолога уколами. Уже после первых сеансов массажа поувствовала себя лучше, далее боль ушла полностью.Далее последовали рекомендации по питанию и физической нагрузке для поддержания здоровья!</div>
+          <div class="rev-author"><div class="rev-avatar">ГЗ</div><div><div class="rev-name">Гелюся З.</div><div class="rev-meta"></div></div></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
 
   <!-- FOOTER -->
   <footer class="footer">
